@@ -7,12 +7,15 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar"
-import { Moon, Sun } from "lucide-react"
+import { SignInButton, useUser } from "@clerk/nextjs";
+import { Moon, Sun, User2 } from "lucide-react"
 import { useTheme } from "next-themes"
 import Image from "next/image"
+import CreditProgress from "./CreditProgress";
 
 export function AppSidebar() {
     const {theme,setTheme}=useTheme()
+    const {user}=useUser()
   return (
     <Sidebar>
       <SidebarHeader>
@@ -29,20 +32,34 @@ export function AppSidebar() {
                 
             </div>
             </div>
+            {user?
+            <Button className="mt-7 w-full" size="lg">+ New Chat</Button>:
+            <SignInButton>
             <Button className="mt-7 w-full" size="lg">+ New Chat</Button>
+            </SignInButton>}
             </div>
         </SidebarHeader>
       <SidebarContent>
         <SidebarGroup >
             <div className={"p-3"}>
             <h2 className="font-bold text-lg">Chat</h2>
-            <p className="text-sm text-gray-500">Sign in to start chatting with multiple model</p>
+           {!user&& <p className="text-sm text-gray-500">Sign in to start chatting with multiple model</p>}
             </div>
         </SidebarGroup >
       </SidebarContent>
       <SidebarFooter >
         <div className="p-3 mb-10">
+          {!user?<SignInButton mode="modal">
             <Button className={"w-full"} size={'lg'}>Sign In/Sign Up</Button>
+            </SignInButton>
+            :
+            <div>
+              <CreditProgress/>
+            <Button className="flex w-full " variant={'ghost'} >
+              <User2/> <h2>Settings</h2>
+            </Button>
+            </div>
+            }
         </div>
         </SidebarFooter>
     </Sidebar>

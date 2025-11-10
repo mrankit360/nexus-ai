@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { AppSidebar } from './_components/AppSidebar'
@@ -7,9 +7,14 @@ import AppHeader from './_components/AppHeader'
 import { useUser } from '@clerk/nextjs'
 import { db } from '@/config/FirebaseConfig'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { DefaultModel } from '@/shared/AiModels'
+import { AiSelectedModelContext } from '@/context/AiSelectedModelContext'
+import { UserDetailContext } from '@/context/UserDetailsContext'
 
 function Provider({children,...props}) {
   const {user}=useUser();
+  const [aiSelectedModels,setAiSelectedModels]=useState(DefaultModel)
+  const [userDetail,setUserDetail]=useState()
 
   useEffect(()=>{
     if(user){
@@ -23,7 +28,10 @@ function Provider({children,...props}) {
 
     if(userSnap.exists()){
       console.log("existing user..;")
-      return ;
+      const userInfo=userSnap.data();
+      setAiSelectedModels(userInfo?.selectedModelPref)
+      setUserDetail(userInfo);
+;      return ;
     }else{
       const userData={
         name:user?.fullName,
@@ -35,22 +43,26 @@ function Provider({children,...props}) {
       }
       await setDoc(userRef,userData)
       console.log('New User Data Saved')
+      setUserDetail(userData);
     }
     //if not then insert
   }
   return (
-    <NextThemesProvider 
+    <NextThemesProvider {...props}
     attribute="class"
     defaultTheme="system"
     enableSystem
-    disableTransitionOnChange
-    {...props}>
+    disableTransitionOnChange >
+      <UserDetailContext.Provider value={{userDetail,setUserDetail}}>
+    <AiSelectedModelContext.Provider value={{aiSelectedModels,setAiSelectedModels}}>
     <SidebarProvider>
         <AppSidebar/>
         
     <div className='w-full'>
         <AppHeader/>{children}</div>
     </SidebarProvider>
+    </AiSelectedModelContext.Provider>
+    </UserDetailContext.Provider>
     </NextThemesProvider>
   )
 }

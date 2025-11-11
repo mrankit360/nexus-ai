@@ -71,14 +71,14 @@ export default [
   //   ],
   // },
 
-  {
-    model: "Llama",
-    icon: "/llama.png",
-    premium: false,
-    enable: true,
-    subModel: [
-      { name: "Llama 3.3 70B Instruct", premium: false, id: "Llama-3.3-70B-Instruct" },
-      { name: "Llama 4 Scout 17B 16E Instruct", premium: true, id: "Llama-4-Scout-17B-16E-Instruct" },
-    ],
-  }
+  // {
+  //   model: "Llama",
+  //   icon: "/llama.png",
+  //   premium: false,
+  //   enable: true,
+  //   subModel: [
+  //     { name: "Llama 3.3 70B Instruct", premium: false, id: "Llama-3.3-70B-Instruct" },
+  //     { name: "Llama 4 Scout 17B 16E Instruct", premium: true, id: "Llama-4-Scout-17B-16E-Instruct" },
+  //   ],
+  // }
 ];

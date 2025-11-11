@@ -6,7 +6,7 @@ import { AppSidebar } from './_components/AppSidebar'
 import AppHeader from './_components/AppHeader'
 import { useUser } from '@clerk/nextjs'
 import { db } from '@/config/FirebaseConfig'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { DefaultModel } from '@/shared/AiModels'
 import { AiSelectedModelContext } from '@/context/AiSelectedModelContext'
 import { UserDetailContext } from '@/context/UserDetailsContext'
@@ -15,12 +15,26 @@ function Provider({children,...props}) {
   const {user}=useUser();
   const [aiSelectedModels,setAiSelectedModels]=useState(DefaultModel)
   const [userDetail,setUserDetail]=useState()
+  const [messages,setMessages]=useState({})
 
   useEffect(()=>{
     if(user){
       CreateNewuser()
     }
   },[user])
+
+  useEffect(()=>{
+    if(aiSelectedModels){
+      updateAIModelSelectionPref()
+    }
+  },[aiSelectedModels]);
+
+  const updateAIModelSelectionPref=async()=>{
+    const docRef = doc(db,"users",user?.primaryEmailAddress?.emailAddress);
+          await updateDoc(docRef,{
+            selectedModelPref:aiSelectedModels
+          })
+  }
   const CreateNewuser=async()=>{
     //if user exit
     const userRef=doc(db,"users",user?.primaryEmailAddress?.emailAddress)
@@ -29,7 +43,7 @@ function Provider({children,...props}) {
     if(userSnap.exists()){
       console.log("existing user..;")
       const userInfo=userSnap.data();
-      setAiSelectedModels(userInfo?.selectedModelPref)
+      setAiSelectedModels(userInfo?.selectedModelPref??DefaultModel)
       setUserDetail(userInfo);
 ;      return ;
     }else{
@@ -54,7 +68,7 @@ function Provider({children,...props}) {
     enableSystem
     disableTransitionOnChange >
       <UserDetailContext.Provider value={{userDetail,setUserDetail}}>
-    <AiSelectedModelContext.Provider value={{aiSelectedModels,setAiSelectedModels}}>
+    <AiSelectedModelContext.Provider value={{aiSelectedModels,setAiSelectedModels,messages,setMessages}}>
     <SidebarProvider>
         <AppSidebar/>
         

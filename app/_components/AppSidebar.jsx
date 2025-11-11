@@ -8,14 +8,20 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar"
 import { SignInButton, useUser } from "@clerk/nextjs";
-import { Moon, Sun, User2 } from "lucide-react"
+import { Moon, Sun, User2, Zap } from "lucide-react"
 import { useTheme } from "next-themes"
 import Image from "next/image"
 import CreditProgress from "./CreditProgress";
+import { useEffect, useState } from "react";
 
 export function AppSidebar() {
     const {theme,setTheme}=useTheme()
-    const {user}=useUser()
+    const[mounted,setMounted] = useState(false)
+    const {user}=useUser();
+
+    useEffect(()=>{
+      setMounted(true)
+    },[])
   return (
     <Sidebar>
       <SidebarHeader>
@@ -27,9 +33,10 @@ export function AppSidebar() {
             <h2 className="font-bold text-xl">NexusAI</h2>
             </div>
             <div>
-                {theme == 'light'? <Button variant={'ghost'} onClick={()=>setTheme('dark')}><Sun /></Button>:
-                <Button variant={'ghost'} onClick={()=>setTheme('light')}><Moon /></Button>}
-                
+              {mounted && (
+                theme == 'light'? (<Button variant={'ghost'} onClick={()=>setTheme('dark')}> <Sun /></Button>):(
+                <Button variant={'ghost'} onClick={()=>setTheme('light')}><Moon /></Button>)
+                )}
             </div>
             </div>
             {user?
@@ -55,7 +62,8 @@ export function AppSidebar() {
             :
             <div>
               <CreditProgress/>
-            <Button className="flex w-full " variant={'ghost'} >
+              <Button className={'w-full mb-3'}> <Zap /> Upgrade Plan</Button>
+              <Button className="flex w-full " variant={'ghost'} >
               <User2/> <h2>Settings</h2>
             </Button>
             </div>

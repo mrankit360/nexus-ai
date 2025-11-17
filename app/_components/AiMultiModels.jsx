@@ -19,12 +19,13 @@ import { db } from '@/config/FirebaseConfig'
 import { useUser } from '@clerk/nextjs'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { useSearchParams } from 'next/navigation'
 
 function AiMultiModels() {
   const {user}=useUser();
     const [aiModelList,setAiModelList]=useState(AiModellist)
     const {aiSelectedModels,setAiSelectedModels,messages,setMessages} = useContext(AiSelectedModelContext)
-
+ 
     const onToggleChange = (model,value)=>{
         setAiModelList((prev)=>
         prev.map((m)=>m.model===model?{...m,enable:value}: m))
@@ -65,7 +66,7 @@ function AiMultiModels() {
           <Image src={model.icon} alt={model.model} width={24} height={24} />
           {model.enable && (
             <Select
-              defaultValue={aiSelectedModels[model.model].modelId}
+              defaultValue={aiSelectedModels[model.model]?.modelId}
               onValueChange={(v) => onSelectValue(model.model, v)} disabled={model.premium}
             >
               <SelectTrigger className="w-[180px]">
@@ -119,21 +120,23 @@ function AiMultiModels() {
 
       {/* 🔹 Messages area */}
       {model.enable &&
-      <div className='flex-1 p-4'>
-        <div className='flex-1 p-4 space-y-2'>
+      <div className='flex flex-col h-full p-4 overflow-hidden '>
+        <div className='flex-1 overflow-y-auto space-y-2'>
           {messages[model.model]?.map((m,i)=>(
             <div key={i} className={`p-2 rounded-md ${m.role=='user'?"bg-blue-100 text-blue-900":
               "bg-gray-100 text-gray-900"
             }`}>
-              {m.role=='assistant'&&(
+              {m.role==='assistant'&& (
                 <span className='text-sm text-gray-400'>{m.model??model.model}</span>
               )}
+              
               <div className='flex gap-3 items-center'>
               {m.content === 'loading'&&<><Loader className="animate-spin"/><span>Thinking...</span></>}
               </div>
-              {m.content !== 'loading' && 
+              {m?.content !== 'loading' && 
+              m?.content &&
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {m.content}
+                {m?.content}
 
               </ReactMarkdown>
 }

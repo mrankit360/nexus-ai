@@ -6,7 +6,7 @@ function CreditProgress({remainingToken}) {
     <div className='p-3 border rounded-2xl mb-5 gap-2 '>
         <h2 className='font-bold text-xl'>Free Plan</h2>
         <p className='text-gray-400 '>{15-remainingToken}/15 message used</p>
-        <Progress value={((5-remainingToken)/5)*100} />
+        <Progress value={100-((15-remainingToken)/5)*100} />
     </div>
   )
 }

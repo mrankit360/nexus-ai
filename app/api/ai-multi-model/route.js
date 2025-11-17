@@ -2,7 +2,7 @@ import axios from "axios";
 import { NextResponse } from "next/server";
 export async function POST(req) {
   
-    const {model,msg,parentModel}=await req.json();
+    const {model,msg,parentModel}= await req.json();
   /* Send POST request using Axios */
   const response = await axios.post(
     "https://kravixstudio.com/api/v1/chat",

@@ -19,6 +19,7 @@ import Link from "next/link"
 import axios from "axios";
 import { db } from "@/config/FirebaseConfig";
 import { AiSelectedModelContext } from "@/context/AiSelectedModelContext";
+import PricingModels from "./PricingModels";
 
 
 export function AppSidebar() {
@@ -46,7 +47,7 @@ export function AppSidebar() {
       })
     }
 
-      const GetLastUserMessageFromChat = (chats) => {
+    const GetLastUserMessageFromChat = (chats) => {
     if (!chats || !chats.messages) {
       return {
         chatId: chats?.chatId || "",
@@ -73,9 +74,12 @@ export function AppSidebar() {
     };
   };
     const GetRemainingTokenMsgs=async()=>{
+      try{
         const result=await axios.post('/api/user-remaining-msg')
-        console.log(result)
-        setFreeMsgCount(result?.data?.remainingToken)
+        setFreeMsgCount(result?.data?.remainingToken);
+      } catch(error){
+        console.error("Error fetching remaining tokens:", error);
+      }
     }
 
     useEffect(()=>{
@@ -130,7 +134,8 @@ export function AppSidebar() {
             :
             <div>
               <CreditProgress remainingToken={freeMsgCount}/>
-              <Button className={'w-full mb-3'}> <Zap /> Upgrade Plan</Button>
+              <PricingModels>
+              <Button className={'w-full mb-3'}> <Zap /> Upgrade Plan</Button></PricingModels>
               <Button className="flex w-full " variant={'ghost'} >
               <User2/> <h2>Settings</h2>
             </Button>

@@ -97,8 +97,8 @@ export function AppSidebar() {
             </div>
             <div>
               {mounted && (
-                theme == 'light'? (<Button variant={'ghost'} onClick={()=>setTheme('dark')}> <Sun /></Button>):(
-                <Button variant={'ghost'} onClick={()=>setTheme('light')}><Moon /></Button>)
+                theme === 'light'? (<Button variant={'ghost'} onClick={()=>setTheme('dark')}> <Sun /></Button>):(
+                <Button onClick={()=>setTheme('light')}><Moon /></Button>)
                 )}
             </div>
             </div>

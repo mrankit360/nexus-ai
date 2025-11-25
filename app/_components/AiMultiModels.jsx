@@ -1,4 +1,4 @@
-"use client"
+
 import AiModellist from '@/shared/AiModellist'
 import Image from 'next/image'
 import React, { useContext, useState } from 'react'
@@ -20,7 +20,6 @@ import { db } from '@/config/FirebaseConfig'
 import { useUser } from '@clerk/nextjs'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { useSearchParams } from 'next/navigation'
 
 function AiMultiModels() {
   const {user}=useUser();
